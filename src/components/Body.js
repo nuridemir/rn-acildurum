@@ -5,7 +5,7 @@ import SendSMS from 'react-native-sms';
 
 export default function Body() {
   const [acilArama, setAcilArama] = React.useState('155');
-  const [acilSms, setAcilSms] = React.useState('155s');
+  const [acilSms, setAcilSms] = React.useState('155');
   const [bodySMS, setBodySMS] = React.useState('Yardıma ihtiyacım var!');
 
   const handleAcilSms = () => {
