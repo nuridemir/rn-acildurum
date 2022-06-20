@@ -1,0 +1,97 @@
+import {StyleSheet, Text, TextInput, View, Alert, Button} from 'react-native';
+import React from 'react';
+import NumberContext from '../context/NumberContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function NumberSettings() {
+  const {
+    acilNumber,
+    setAcilNumber,
+    acilSmsNumber,
+    setAcilSmsNumber,
+    acilSmsBody,
+    setAcilSmsBody,
+    LocalAcilNumber,
+    setLocalAcilNumber,
+  } = React.useContext(NumberContext);
+
+  React.useEffect(() => {
+    loadNumber;
+  });
+
+  const loadNumber = () => {
+    const localStrogeAcilNum = AsyncStorage.getItem('acilNumber')
+      .then(data => {
+        if (data !== null) {
+          setLocalAcilNumber(JSON.parse(data));
+        }
+      })
+      .catch(error => console.log(error));
+  };
+
+  const numKaydet = () => {
+    setLocalAcilNumber(acilNumber);
+    alert('başarıyla kaydedildi');
+  };
+
+  return (
+    <View>
+      <View>
+        <Text>{LocalAcilNumber}</Text>
+      </View>
+      <View>
+        <TextInput style={{backgroundColor: '#222', color: '#fff'}} />
+        <Button title="Kaydet" onPress={numKaydet} />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({});
+
+
+
+
+
+
+
+
+import React, {createContext} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const NumberContext = createContext();
+
+export function NumberContextProvider({children}) {
+  const [LocalAcilNumber, setLocalAcilNumber] = React.useState([]);
+  const [acilNumber, setAcilNumber] = React.useState(LocalAcilNumber);
+
+  const [acilSmsNumber, setAcilSmsNumber] = React.useState('155');
+  const [acilSmsBody, setAcilSmsBody] = React.useState(
+    'Yardıma ihtiyacım var!!!',
+  );
+
+  const values = {
+    acilNumber,
+    setAcilNumber,
+    acilSmsNumber,
+    setAcilSmsNumber,
+    acilSmsBody,
+    setAcilSmsBody,
+    LocalAcilNumber,
+    setLocalAcilNumber,
+  };
+
+  React.useEffect(() => {
+    AsyncStorage.setItem('acilNumber', JSON.stringify(acilNumber))
+      .then(() => {
+        setLocalAcilNumber(acilNumber);
+      })
+      .catch(error => console.log(error));
+  });
+
+  return (
+    <NumberContext.Provider value={values}>{children}</NumberContext.Provider>
+  );
+}
+
+export default NumberContext;

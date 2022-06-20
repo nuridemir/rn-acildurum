@@ -1,18 +1,38 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 import SendSMS from 'react-native-sms';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AddNumber from '../components/AddNumber';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function Body() {
-  const [acilArama, setAcilArama] = React.useState('155');
-  const [acilSms, setAcilSms] = React.useState('155');
-  const [bodySMS, setBodySMS] = React.useState('Yardıma ihtiyacım var!');
+  const navigation = useNavigation();
+  const [input, setInput] = React.useState('');
 
+  const readData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@acilnumara');
+      if (value !== null) {
+        setInput(value);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  React.useEffect(() => {
+    readData();
+  }, []);
+
+  const [acil, setAcil] = useState('155');
+  const [acilBody, setAcilBoyd] = useState('Yardıma ihticayım var!');
   const handleAcilSms = () => {
     SendSMS.send(
       {
-        body: bodySMS,
-        recipients: [acilSms],
+        body: acilBody,
+        recipients: [input],
         successTypes: ['sent', 'queued'],
       },
       (completed, cancelled, error) => {
@@ -26,21 +46,33 @@ export default function Body() {
       },
     );
   };
-
+  const handleAcilAileAra = () => {
+    RNImmediatePhoneCall.immediatePhoneCall(input);
+  };
   const handleAcilAra = () => {
-    RNImmediatePhoneCall.immediatePhoneCall(acilArama);
+    RNImmediatePhoneCall.immediatePhoneCall(acil);
   };
 
   return (
     <View style={styles.container}>
+      <View style={styles.headerTop}>
+        <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
+          <Text style={{textAlign: 'right'}}>
+            <Icon name="ios-settings-sharp" color="#fff" size={24} />
+          </Text>
+        </TouchableOpacity>
+      </View>
       <View>
         <Text style={styles.headerText}>Acil Durum Çağrısı</Text>
       </View>
       <TouchableOpacity style={styles.button} onPress={handleAcilAra}>
-        <Text style={styles.text}>Acil Ara</Text>
+        <Text style={styles.text}>Polisi Ara</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleAcilAileAra}>
+        <Text style={styles.text}>Aileni Ara</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleAcilSms}>
-        <Text style={styles.text}>Sms</Text>
+        <Text style={styles.text}>Ailene acil sms at</Text>
       </TouchableOpacity>
     </View>
   );
@@ -49,10 +81,12 @@ export default function Body() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#333',
+    padding: 20,
+  },
+  headerTop: {
+    marginVertical: 10,
+    textAlign: 'right',
   },
   button: {
     width: '100%',
@@ -64,12 +98,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'tomato',
     color: 'white',
     textAlign: 'center',
+    textTransform: 'uppercase',
+    fontWeight: '700'
   },
   headerText: {
     fontSize: 34,
-    marginBottom: 40,
+    marginVertical: 40,
     fontWeight: '600',
     color: 'white',
+    textAlign: 'center'
   },
   container2: {
     padding: 10,
