@@ -1,4 +1,11 @@
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Dimensions,
+} from 'react-native';
 import React, {useContext, useState, useEffect} from 'react';
 import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 import SendSMS from 'react-native-sms';
@@ -58,22 +65,35 @@ export default function Body() {
       <View style={styles.headerTop}>
         <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
           <Text style={{textAlign: 'right'}}>
-            <Icon name="ios-settings-sharp" color="#fff" size={24} />
+            <Icon name="ios-settings-sharp" color="#F56565" size={30} />
           </Text>
         </TouchableOpacity>
       </View>
-      <View>
-        <Text style={styles.headerText}>Acil Durum Çağrısı</Text>
+      <View style={styles.box}>
+        <View style={styles.innerBox}>
+          <TouchableOpacity style={styles.button} onPress={handleAcilAra}>
+            <Image
+              style={styles.images}
+              source={require('../assets/images/alert.png')}
+            />
+            <Text style={styles.text}>Polisi Ara</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleAcilAileAra}>
+            <Image
+              style={styles.images}
+              source={require('../assets/images/family.png')}
+            />
+            <Text style={styles.text}>Aileni Ara</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleAcilSms}>
+            <Image
+              style={styles.images}
+              source={require('../assets/images/conversation.png')}
+            />
+            <Text style={styles.text}>Ailene sms at</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleAcilAra}>
-        <Text style={styles.text}>Polisi Ara</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleAcilAileAra}>
-        <Text style={styles.text}>Aileni Ara</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleAcilSms}>
-        <Text style={styles.text}>Ailene acil sms at</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -81,62 +101,34 @@ export default function Body() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#333',
-    padding: 20,
+    backgroundColor: '#1a202c',
   },
   headerTop: {
-    marginVertical: 10,
-    textAlign: 'right',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingRight: 20,
   },
-  button: {
-    width: '100%',
-    marginBottom: 20,
-    borderRadius: 20,
+  box: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 10,
+  },
+  innerBox: {
+    height: Dimensions.get('window').height / 1.5,
   },
   text: {
-    padding: 20,
-    backgroundColor: 'tomato',
     color: 'white',
     textAlign: 'center',
     textTransform: 'uppercase',
-    fontWeight: '700'
+    fontWeight: '700',
   },
-  headerText: {
-    fontSize: 34,
-    marginVertical: 40,
-    fontWeight: '600',
-    color: 'white',
-    textAlign: 'center'
-  },
-  container2: {
-    padding: 10,
-    textAlign: 'center',
-    marginTop: 100,
-  },
-  titleText: {
-    fontSize: 22,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  titleTextsmall: {
-    marginVertical: 8,
-    fontSize: 16,
-  },
-  buttonStyle: {
+  button: {
+    flexDirection: 'column',
+    alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 15,
-    padding: 10,
-    backgroundColor: '#8ad24e',
-  },
-  buttonTextStyle: {
-    color: '#fff',
     textAlign: 'center',
-  },
-  textInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    width: '100%',
-    paddingHorizontal: 10,
+    flex: 1,
   },
 });

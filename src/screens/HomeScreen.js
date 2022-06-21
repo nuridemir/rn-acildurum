@@ -5,12 +5,16 @@ import {
   TouchableOpacity,
   View,
   TextInput,
-  Button,
+  Dimensions,
+  Alert,
+  Image,
 } from 'react-native';
 import React from 'react';
 import Body from '../components/Body';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import CustomButton from '../components/CustomButton';
+import CustomInputBox from '../components/CustomInputBox';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -24,7 +28,7 @@ export default function HomeScreen() {
         setLocalNumber(value);
       }
     } catch (e) {
-      alert('Failed to fetch the input from storage');
+      console.log('Failed to fetch the input from storage');
     }
   };
 
@@ -35,9 +39,12 @@ export default function HomeScreen() {
   const submitHandle = async () => {
     try {
       await AsyncStorage.setItem('@acilnumara', input);
-      alert('Numara başarıyla kaydedildi. Uygulamayı tekrardan başlatınız.');
+      Alert.alert(
+        'Başarılı',
+        'Numara başarıyla kaydedildi. Uygulamayı tekrardan başlatınız.',
+      );
     } catch (e) {
-      alert('Numara kaydedilemedi!');
+      Alert.alert('Hata', 'Numara kaydedilemedi!');
     }
   };
 
@@ -47,19 +54,24 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <View style={styles.innerBox}>
+        <View style={styles.imagesBox}>
+          <Image
+            style={styles.images}
+            source={require('../assets/images/alert.png')}
+          />
+        </View>
         <View>
           <Text style={styles.introductoryText}>
-            Uygulama hoşgeldin, acil durumlar da ailen den birine ulaşabileceğin bir
-            numara eklemen gerekiyor!
-          </Text>
-          <Text style={styles.innerText}>
-            İstediğin zaman ayarlardan değiştirebilirsin
+            Uygulamaya hoşgeldin. Bir numara tanımla.
           </Text>
         </View>
         <View>
-          <TextInput style={styles.inputBox} onChangeText={setInput} />
-          <Button title="Kaydet" style={styles.button} onPress={submitHandle} />
+          <CustomInputBox
+            onChangeText={setInput}
+            placeholder="Aile numarası giriniz..."
+          />
+          <CustomButton text="Kaydet" submitHandle={submitHandle} />
         </View>
       </View>
     </SafeAreaView>
@@ -69,27 +81,34 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#333',
+    backgroundColor: '#1a202c',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  innerBox: {
+    width: Dimensions.get('window').width / 1.1,
+  },
+  introductoryText: {
+    fontSize: 32,
+    color: '#F56565',
+    textAlign: 'center',
+    fontWeight: '700',
+    marginVertical: Dimensions.get('window').width / 30,
+  },
+  inputBox: {
+    backgroundColor: '#2d3748',
+    color: '#fff',
+    borderRadius: 8,
+    paddingHorizontal: Dimensions.get('window').width / 40,
+    borderColor: '#718096',
+    borderWidth: 1,
+    marginTop: Dimensions.get('window').width / 20,
+    marginBottom: Dimensions.get('window').width / 60,
+  },
+  imagesBox: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
-  },
-  introductoryText: {
-    fontSize: 30,
-    color: 'white',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  button: {},
-  inputBox: {
-    backgroundColor: '#eee',
-    color: '#333',
-    borderRadius: 8,
-    marginVertical: 20,
-  },
-  innerText: {
-    color: '#eee',
-    textAlign: 'center',
   },
 });
